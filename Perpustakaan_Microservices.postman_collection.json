@@ -1,0 +1,377 @@
+{
+  "info": {
+    "name": "Perpustakaan Digital Microservices",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. MemberService (Port 8001)",
+      "item": [
+        {
+          "name": "1. Tambah Member",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Accept", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nama_member\": \"Andi Saputra\",\n    \"nim\": \"2024001\",\n    \"email\": \"andi@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://127.0.0.1:8001/api/members",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "8001",
+              "path": ["api", "members"]
+            }
+          }
+        },
+        {
+          "name": "2. Get All Members",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Accept", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "http://127.0.0.1:8001/api/members",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "8001",
+              "path": ["api", "members"]
+            }
+          }
+        },
+        {
+          "name": "3. Get Member By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Accept", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "http://127.0.0.1:8001/api/members/1",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "8001",
+              "path": ["api", "members", "1"]
+            }
+          }
+        },
+        {
+          "name": "4. Get Member Profile (Consumer)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Accept", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "http://127.0.0.1:8001/api/members/1/profile",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "8001",
+              "path": ["api", "members", "1", "profile"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. BukuService (Port 8002)",
+      "item": [
+        {
+          "name": "1. Tambah Buku",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Accept", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"judul\": \"Pemrograman Microservices Laravel\",\n    \"pengarang\": \"Taylor Otwell\",\n    \"stok\": 5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://127.0.0.1:8002/api/bukus",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "8002",
+              "path": ["api", "bukus"]
+            }
+          }
+        },
+        {
+          "name": "2. Get All Buku",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Accept", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "http://127.0.0.1:8002/api/bukus",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "8002",
+              "path": ["api", "bukus"]
+            }
+          }
+        },
+        {
+          "name": "3. Get Buku By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Accept", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "http://127.0.0.1:8002/api/bukus/1",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "8002",
+              "path": ["api", "bukus", "1"]
+            }
+          }
+        },
+        {
+          "name": "4. Update Stok Buku",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Accept", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"stok\": 10\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://127.0.0.1:8002/api/bukus/1/stok",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "8002",
+              "path": ["api", "bukus", "1", "stok"]
+            }
+          }
+        },
+        {
+          "name": "5. Get Histori Peminjam Buku (Consumer)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Accept", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "http://127.0.0.1:8002/api/bukus/1/histori-peminjam",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "8002",
+              "path": ["api", "bukus", "1", "histori-peminjam"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. PinjamService (Port 8003)",
+      "item": [
+        {
+          "name": "1. Buat Peminjaman (Consumer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Accept", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"member_id\": 1,\n    \"buku_id\": 1,\n    \"tgl_pinjam\": \"2024-05-01\",\n    \"tgl_kembali\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://127.0.0.1:8003/api/pinjams",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "8003",
+              "path": ["api", "pinjams"]
+            }
+          }
+        },
+        {
+          "name": "2. Get All Pinjam",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Accept", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "http://127.0.0.1:8003/api/pinjams",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "8003",
+              "path": ["api", "pinjams"]
+            }
+          }
+        },
+        {
+          "name": "3. Get Pinjam By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Accept", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "http://127.0.0.1:8003/api/pinjams/1",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "8003",
+              "path": ["api", "pinjams", "1"]
+            }
+          }
+        },
+        {
+          "name": "4. Get Pinjam By Member ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Accept", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "http://127.0.0.1:8003/api/pinjams/member/1",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "8003",
+              "path": ["api", "pinjams", "member", "1"]
+            }
+          }
+        },
+        {
+          "name": "5. Get Pinjam By Buku ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Accept", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "http://127.0.0.1:8003/api/pinjams/buku/1",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "8003",
+              "path": ["api", "pinjams", "buku", "1"]
+            }
+          }
+        },
+        {
+          "name": "6. Kembalikan Buku",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Accept", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "http://127.0.0.1:8003/api/pinjams/1/kembali",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "8003",
+              "path": ["api", "pinjams", "1", "kembali"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. DendaService (Port 8004)",
+      "item": [
+        {
+          "name": "1. Hitung Denda (Consumer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Accept", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"pinjam_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://127.0.0.1:8004/api/dendas/hitung",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "8004",
+              "path": ["api", "dendas", "hitung"]
+            }
+          }
+        },
+        {
+          "name": "2. Get All Denda",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Accept", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "http://127.0.0.1:8004/api/dendas",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "8004",
+              "path": ["api", "dendas"]
+            }
+          }
+        },
+        {
+          "name": "3. Get Denda By Member ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "Accept", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "http://127.0.0.1:8004/api/dendas/member/1",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "8004",
+              "path": ["api", "dendas", "member", "1"]
+            }
+          }
+        },
+        {
+          "name": "4. Bayar Denda",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Accept", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "http://127.0.0.1:8004/api/dendas/1/bayar",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "8004",
+              "path": ["api", "dendas", "1", "bayar"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

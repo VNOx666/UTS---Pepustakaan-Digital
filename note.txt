@@ -1,0 +1,65 @@
+Judul Project: Sistem Integrasi Layanan Perpustakaan Digital (Arsitektur Microservices)
+Nama Kelompok: Kelompok 2
+
+Anggota Kelompok:
+1. [Nama Anggota 1] - MemberService - Port 8001
+2. [Nama Anggota 2] - BukuService - Port 8002
+3. [Nama Anggota 3] - PinjamService - Port 8003
+4. [Nama Anggota 4] - DendaService - Port 8004
+
+Link Repository GitHub: 
+[Masukkan Link GitHub Repository Kelompok]
+
+Link Dokumentasi Postman: 
+[Masukkan Link Workspace/Published Postman Kelompok]
+
+Link Video Demo: 
+[Masukkan Link YouTube/Gdrive Video Demo Kelompok]
+
+Link Presentasi/UTS:
+https://docs.google.com/presentation/d/1_MN78V4OCMX_5FXvU07RdMJORDWOI6MR/mobilepresent?slide=id.gf1a1c7c82c_0_14
+
+==================================================
+DESKRIPSI SINGKAT PROJECT
+==================================================
+Project ini adalah implementasi sistem Perpustakaan Digital menggunakan arsitektur Microservices.
+Terdapat 4 service independen yang dibuat menggunakan framework Laravel dan berjalan di port yang berbeda. Masing-masing service memiliki database MySQL tersendiri (db_member_service, db_buku_service, db_pinjam_service, db_denda_service). Komunikasi antar service dilakukan secara synchronous menggunakan HTTP Request (Laravel Http Client). Sistem ini mendemonstrasikan pola interaksi "Provider-Consumer" di antara microservices, tanpa menggunakan API Gateway maupun Message Broker.
+
+==================================================
+DAFTAR PORT SERVICE
+==================================================
+- MemberService : http://127.0.0.1:8001
+- BukuService   : http://127.0.0.1:8002
+- PinjamService : http://127.0.0.1:8003
+- DendaService  : http://127.0.0.1:8004
+
+==================================================
+ALUR INTEGRASI UTAMA ANTAR SERVICE
+==================================================
+1. MemberService memanggil PinjamService & DendaService:
+   Saat endpoint GET /api/members/{id}/profile dipanggil, MemberService mengambil profil member dari DB lokal, kemudian melakukan HTTP GET request ke PinjamService untuk mendapatkan riwayat peminjaman, dan HTTP GET request ke DendaService untuk mendapatkan status denda member tersebut.
+
+2. BukuService memanggil PinjamService:
+   Saat endpoint GET /api/bukus/{id}/histori-peminjam dipanggil, BukuService memanggil PinjamService untuk mengetahui daftar transaksi yang melibatkan buku tersebut (siapa saja yang meminjamnya).
+
+3. PinjamService memanggil MemberService & BukuService:
+   Saat ada pembuatan transaksi peminjaman baru (POST /api/pinjams), PinjamService terlebih dahulu melakukan verifikasi member ke MemberService. Jika valid, PinjamService lanjut mengecek ketersediaan buku beserta stoknya ke BukuService. Jika semua valid, data transaksi disimpan dan PinjamService mengirim request (PATCH) ke BukuService untuk mengurangi stok buku.
+
+4. DendaService memanggil PinjamService:
+   Saat dilakukan perhitungan denda (POST /api/dendas/hitung), DendaService memanggil PinjamService untuk mengambil rincian transaksi (tgl_pinjam dan tgl_kembali). Berdasarkan data tersebut, DendaService menghitung keterlambatan pengembalian buku dengan tarif denda Rp 2.000 per hari keterlambatan.
+
+==================================================
+CARA MENJALANKAN (PANDUAN DEMO)
+==================================================
+1. Buka 4 terminal, arahkan masing-masing ke folder service: member-service, buku-service, pinjam-service, denda-service.
+2. Jalankan server secara bersamaan:
+   - Terminal 1: php artisan serve --port=8001 (Di folder member-service)
+   - Terminal 2: php artisan serve --port=8002 (Di folder buku-service)
+   - Terminal 3: php artisan serve --port=8003 (Di folder pinjam-service)
+   - Terminal 4: php artisan serve --port=8004 (Di folder denda-service)
+3. Tambahkan data member melalui POST MemberService.
+4. Tambahkan data buku melalui POST BukuService.
+5. Buat transaksi peminjaman di PinjamService. Transaksi ini otomatis memvalidasi ke MemberService dan BukuService (serta mengurangi stok).
+6. Tampilkan histori peminjam di BukuService (mengambil dari PinjamService).
+7. Simulasikan Denda melalui DendaService (otomatis mengambil dari PinjamService).
+8. Tampilkan Profile lengkap di MemberService (akan mengambil riwayat peminjaman dari PinjamService dan daftar denda dari DendaService).
