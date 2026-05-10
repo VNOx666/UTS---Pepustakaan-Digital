@@ -1,0 +1,112 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - perpustakaan-net
+
+  member-db:
+    image: mysql:8
+    container_name: member-db
+    environment:
+      MYSQL_DATABASE: db_member_service
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3307:3306"
+    networks:
+      - perpustakaan-net
+
+  member-service:
+    build:
+      context: ./member-service
+    container_name: member-service
+    volumes:
+      - ./member-service:/var/www
+    ports:
+      - "8001:8000"
+    depends_on:
+      - member-db
+    networks:
+      - perpustakaan-net
+
+  buku-db:
+    image: mysql:8
+    container_name: buku-db
+    environment:
+      MYSQL_DATABASE: db_buku_service
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3308:3306"
+    networks:
+      - perpustakaan-net
+
+  buku-service:
+    build:
+      context: ./buku-service
+    container_name: buku-service
+    volumes:
+      - ./buku-service:/var/www
+    ports:
+      - "8002:8000"
+    depends_on:
+      - buku-db
+    networks:
+      - perpustakaan-net
+
+  pinjam-db:
+    image: mysql:8
+    container_name: pinjam-db
+    environment:
+      MYSQL_DATABASE: db_pinjam_service
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3309:3306"
+    networks:
+      - perpustakaan-net
+
+  pinjam-service:
+    build:
+      context: ./pinjam-service
+    container_name: pinjam-service
+    volumes:
+      - ./pinjam-service:/var/www
+    ports:
+      - "8003:8000"
+    depends_on:
+      - pinjam-db
+      - rabbitmq
+    networks:
+      - perpustakaan-net
+
+  denda-db:
+    image: mysql:8
+    container_name: denda-db
+    environment:
+      MYSQL_DATABASE: db_denda_service
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3310:3306"
+    networks:
+      - perpustakaan-net
+
+  denda-service:
+    build:
+      context: ./denda-service
+    container_name: denda-service
+    volumes:
+      - ./denda-service:/var/www
+    ports:
+      - "8004:8000"
+    depends_on:
+      - denda-db
+    networks:
+      - perpustakaan-net
+
+networks:
+  perpustakaan-net:
+    driver: bridge
