@@ -6484,7 +6484,7 @@
             "time": "2026-02-04T18:08:13+00:00"
         },
         {
-            "name": "tijsverkoyen/css-to-inline-styles",
+           "name": "tijsverkoyen/css-to-inline-styles",
             "version": "v2.4.0",
             "source": {
                 "type": "git",
