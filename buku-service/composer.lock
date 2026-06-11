@@ -1092,7 +1092,7 @@
                     "email": "hayden@haydenpierce.com"
                 }
             ],
-            "description": "A library that can provide of a list of classes in a given namespace",
+            "description": "A library that can provide a list of classes in a given namespace",
             "support": {
                 "issues": "https://gitlab.com/hpierce1102/ClassFinder/-/issues",
                 "source": "https://gitlab.com/hpierce1102/ClassFinder/-/tree/0.6.0"
@@ -1967,7 +1967,7 @@
             "suggest": {
                 "ext-bcmath": "to improve IPV4 host parsing",
                 "ext-dom": "to convert the URI into an HTML anchor tag",
-                "ext-fileinfo": "to create Data URI from file contennts",
+                "ext-fileinfo": "to create Data URI from file contents",
                 "ext-gmp": "to improve IPV4 host parsing",
                 "ext-intl": "to handle IDN host with the best performance",
                 "ext-uri": "to use the PHP native URI class",
@@ -6484,7 +6484,7 @@
             "time": "2026-02-04T18:08:13+00:00"
         },
         {
-           "name": "tijsverkoyen/css-to-inline-styles",
+            "name": "tijsverkoyen/css-to-inline-styles",
             "version": "v2.4.0",
             "source": {
                 "type": "git",
