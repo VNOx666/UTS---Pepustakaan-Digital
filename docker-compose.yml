@@ -1,0 +1,169 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - perpustakaan-net
+
+  # === DATABASE METADATA HASURA (WAJIB POSTGRES) ===
+  hasura-metadata-db:
+    image: postgres:15
+    container_name: hasura-metadata-db
+    restart: always
+    environment:
+      POSTGRES_USER: hasura_meta_user
+      POSTGRES_PASSWORD: hasura_meta_password
+      POSTGRES_DB: hasura_metadata
+    ports:
+      - "5432:5432"
+    networks:
+      - perpustakaan-net
+    volumes:
+      - hasura_meta_data:/var/lib/postgresql/data
+
+  # === HASURA GRAPHQL ENGINE ===
+  graphql-engine:
+    image: hasura/graphql-engine:v2.38.0
+    container_name: hasura-engine
+    ports:
+      - "8080:8080"
+    depends_on:
+      - hasura-metadata-db
+      - data-connector-agent # Ditambahkan agar Hasura menunggu agent MySQL siap
+      - member-db
+      - buku-db
+      - pinjam-db
+      - denda-db
+    restart: always
+    networks:
+      - perpustakaan-net
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://hasura_meta_user:hasura_meta_password@hasura-metadata-db:5432/hasura_metadata
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+      HASURA_GRAPHQL_DEV_MODE: "true"
+      HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
+      # Konfigurasi penghubung ke agent MySQL
+      HASURA_GRAPHQL_DATA_CONNECTORS_CONFIG: '{"types": {"mysql": {"uri": "http://data-connector-agent:8081"}}}'
+
+  # === HASURA DATA CONNECTOR AGENT (UNTUK MYSQL) ===
+  data-connector-agent:
+    image: hasura/graphql-data-connector:v2.38.0
+    container_name: hasura-data-connector
+    restart: always
+    ports:
+      - "8081:8081"
+    networks:
+      - perpustakaan-net
+
+  # === MICROSERVICE: MEMBER ===
+  member-db:
+    image: mysql:8
+    container_name: member-db
+    environment:
+      MYSQL_DATABASE: db_member_service
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3307:3306"
+    networks:
+      - perpustakaan-net
+
+  member-service:
+    build:
+      context: ./member-service
+    container_name: member-service
+    volumes:
+      - ./member-service:/var/www
+    ports:
+      - "8001:8000"
+    depends_on:
+      - member-db
+    networks:
+      - perpustakaan-net
+
+  # === MICROSERVICE: BUKU ===
+  buku-db:
+    image: mysql:8
+    container_name: buku-db
+    environment:
+      MYSQL_DATABASE: db_buku_service
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3308:3306"
+    networks:
+      - perpustakaan-net
+
+  buku-service:
+    build:
+      context: ./buku-service
+    container_name: buku-service
+    volumes:
+      - ./buku-service:/var/www
+    ports:
+      - "8002:8000"
+    depends_on:
+      - buku-db
+    networks:
+      - perpustakaan-net
+
+  # === MICROSERVICE: PINJAM ===
+  pinjam-db:
+    image: mysql:8
+    container_name: pinjam-db
+    environment:
+      MYSQL_DATABASE: db_pinjam_service
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3309:3306"
+    networks:
+      - perpustakaan-net
+
+  pinjam-service:
+    build:
+      context: ./pinjam-service
+    container_name: pinjam-service
+    volumes:
+      - ./pinjam-service:/var/www
+    ports:
+      - "8003:8000"
+    depends_on:
+      - pinjam-db
+      - rabbitmq
+    networks:
+      - perpustakaan-net
+
+  # === MICROSERVICE: DENDA ===
+  denda-db:
+    image: mysql:8
+    container_name: denda-db
+    environment:
+      MYSQL_DATABASE: db_denda_service
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3310:3306"
+    networks:
+      - perpustakaan-net
+
+  denda-service:
+    build:
+      context: ./denda-service
+    container_name: denda-service
+    volumes:
+      - ./denda-service:/var/www
+    ports:
+      - "8004:8000"
+    depends_on:
+      - denda-db
+    networks:
+      - perpustakaan-net
+
+networks:
+  perpustakaan-net:
+    driver: bridge
+
+volumes:
+  hasura_meta_data:

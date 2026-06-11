@@ -1,0 +1,15 @@
+type Buku {
+    id: ID!
+    judul: String!
+    pengarang: String!
+    stok: Int!
+}
+
+type Query {
+    lihatSemuaBuku: [Buku!]! @all
+    cariBukuBerdasarkanId(id: ID! @eq): Buku @find
+}
+
+type Mutation {
+    createBuku(judul: String!, pengarang: String!, stok: Int!): Buku @create
+}
